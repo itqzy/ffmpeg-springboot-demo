@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>视频制作</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<style>
+    .displayTrue {
+        display: none
+    }
+
+    .displayFalse {
+        display: inline
+    }
+</style>
+<body>
+
+<div class="container mt-3">
+    <h2>配置信息</h2>
+
+    <div class="mb-3">
+        <label class="form-label">操作类型:</label>
+        <select class="form-select" id="operateType" onchange="typeChang()">
+            <option value="1">剪切音视频</option>
+            <option value="2">视频合并</option>
+            <option value="3">视频转图片</option>
+            <option value="4">图片转视频</option>
+            <option value="5">视频增加png图层</option>
+            <option value="6">视频增加gif图层</option>
+            <option value="7">图片批量增加图层</option>
+
+        </select>
+    </div>
+    <!--  剪切音视频  -->
+    <div class="cutAv">
+        <form id="cutAv">
+            <div class="mb-3 mt-3">
+                <label class="form-label">原素材路径:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4" name="sourcePath">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">输出素材路径:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\剪切后文件名称.mp4" name="targetPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">起始时间:</label>
+                <input class="form-control" placeholder="起始时间，格式 00:00:00.000   小时:分:秒.毫秒" name="offetTime">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">结束时间:</label>
+                <input class="form-control" placeholder="结束时间，开始时间的后n秒 格式 00:00:00.000   小时:分:秒.毫秒" name="endTime">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="cutAv()">提交</button>
+        </form>
+    </div>
+    <!-- 视频合并 -->
+    <div class="mergeAv">
+        <form id="mergeAv">
+            <div class="mb-3 mt-3">
+                <label class="form-label">待合并视频路径1:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4" name="firstFragmentPath">
+            </div>
+            <div class="mb-3">
+                <label f class="form-label">待合并视频路径2:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4" name="secondFragmentPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">目标存储位置:</label>
+                <input class="form-control" placeholder="目标存储位置 如D:\测试视频\素材\文件名称.mp4" name="targetPath">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="mergeAv()">提交</button>
+        </form>
+    </div>
+
+    <!-- 视频转图片-->
+    <div class="videoToPng">
+        <form id="videoToPng">
+            <div class="mb-3 mt-3">
+                <label class="form-label">视频地址:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4" name="videoPath">
+            </div>
+            <div class="mb-3">
+                <label f class="form-label">输出图片地址:</label>
+                <input class="form-control" placeholder="本地磁盘地址 如：D:\img\1_frame_%05d.png 其中图片名称后_%05d为固定值 代表生成5位数序号"
+                       name="imagesPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">每秒抽取几帧:</label>
+                <input class="form-control" placeholder="每秒抽取几帧 输入数字  如25" name="i">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="videoToPng()">提交</button>
+        </form>
+    </div>
+
+    <!-- 图片转视频-->
+    <div class="picToVideo">
+        <form id="picToVideo">
+            <div class="mb-3">
+                <label f class="form-label">图片地址:</label>
+                <input class="form-control" placeholder="本地磁盘地址 如：D:\img\1_frame_%05d.png 其中图片名称后_%05d为固定值 代表生成5位数序号"
+                       name="imagesPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">输出视频地址:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4" name="videoPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">每秒几帧:</label>
+                <input class="form-control" placeholder="每秒几帧 输入数字 如25 代表一秒25帧" name="i">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">视频所需的码率:</label>
+                <input class="form-control" placeholder="25313k 代表视频所需的码率为25313k 将码率设为和原视频一致，那么由图片得到的视频也会和原视频的播放效果类似。" name="k">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="picToVideo()">提交</button>
+        </form>
+    </div>
+
+    <!-- 图片批量增加图层   -->
+    <div class="picAddpic">
+        <form id="picAddpic">
+            <div class="mb-3">
+                <label f class="form-label">原始图片地址:</label>
+                <input class="form-control" placeholder="本地磁盘地址 如：D:\img\1_frame_%05d.png 其中图片名称后_%05d为固定值 代表生成5位数序号"
+                       name="imagesPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">图层地址:</label>
+                <input class="form-control" placeholder="图层地址必须在项目根目录下，使用盘符会无法执行 其中图片名称后_%05d为固定值 代表生成5位数序号" name="layersPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">输出地址:</label>
+                <input class="form-control" placeholder="本地磁盘地址 如：D:\img\1_frame_%05d.png 其中图片名称后_%05d为固定值 代表生成5位数序号" name="outPath">
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="picAddpic()">提交</button>
+        </form>
+    </div>
+
+    <!-- 视频增加png图层-->
+    <div class="addVideoPngLogo">
+        <form id="addVideoPngLogo">
+            <div class="mb-3">
+                <label  class="form-label">原视频地址:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4"
+                       name="videoPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">PNG格式的图层地址:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.png" name="logoPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">输出视频地址:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4" name="outVideoPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">X轴坐标:</label>
+                <input class="form-control" placeholder="X轴坐标值 为视频分辨率" name="xValue">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">Y轴坐标:</label>
+                <input class="form-control" placeholder="Y轴坐标值 为视频分辨率" name="yValue">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">起始时间:</label>
+                <input class="form-control" placeholder="水印出现时间 时间为视频的第几秒" name="startTime">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">结束时间:</label>
+                <input class="form-control" placeholder="水印消失时间 为开始时间后续的几秒" name="endTime">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="addVideoPngLogo()">提交</button>
+        </form>
+    </div>
+
+    <!-- 视频增加gif图层-->
+    <div class="addVideoGifLogo">
+        <form id="addVideoGifLogo">
+            <div class="mb-3">
+                <label  class="form-label">原视频地址:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4"
+                       name="videoPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">GIF格式的图层地址:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.gif" name="logoPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">输出视频地址:</label>
+                <input class="form-control" placeholder="资源本地路径或者url 如D:\测试视频\素材\文件名称.mp4" name="outVideoPath">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">X轴坐标:</label>
+                <input class="form-control" placeholder="X轴坐标值 为视频分辨率 如1920" name="xValue">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">Y轴坐标:</label>
+                <input class="form-control" placeholder="Y轴坐标值 为视频分辨率 如1080" name="yValue">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">logo宽度:</label>
+                <input class="form-control"  placeholder="logo宽度 如300" name="logoWidth">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">logo高度:</label>
+                <input class="form-control" placeholder="logo宽度 如300" name="logoHeight">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">起始时间:</label>
+                <input class="form-control" placeholder="水印出现时间 时间为视频的第几秒" name="startTime">
+            </div>
+            <div class="mb-3 mt-3">
+                <label class="form-label">结束时间:</label>
+                <input class="form-control" placeholder="水印消失时间 时间为视频的第几秒" name="endTime">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="addVideoGifLogo()">提交</button>
+        </form>
+    </div>
+
+
+</div>
+
+</body>
+<script>
+    $(function () {
+        $(".cutAv")[0].style.display = "block";
+        $(".mergeAv")[0].style.display = "none";
+        $(".videoToPng")[0].style.display = "none";
+        $(".picToVideo")[0].style.display = "none";
+        $(".picAddpic")[0].style.display = "none";
+        $(".addVideoPngLogo")[0].style.display = "none";
+        $(".addVideoGifLogo")[0].style.display = "none";
+    })
+
+    function typeChang() {
+        let type = $("#operateType").val();
+        switch (type) {
+            case "1":
+                $(".cutAv")[0].style.display = "block";
+                $(".mergeAv")[0].style.display = "none";
+                $(".videoToPng")[0].style.display = "none";
+                $(".picToVideo")[0].style.display = "none";
+                $(".picAddpic")[0].style.display = "none";
+                $(".addVideoPngLogo")[0].style.display = "none";
+                $(".addVideoGifLogo")[0].style.display = "none";
+
+                break
+            case "2":
+                $(".cutAv")[0].style.display = "none";
+                $(".mergeAv")[0].style.display = "block";
+                $(".videoToPng")[0].style.display = "none";
+                $(".picToVideo")[0].style.display = "none";
+                $(".picAddpic")[0].style.display = "none";
+                $(".addVideoPngLogo")[0].style.display = "none";
+                $(".addVideoGifLogo")[0].style.display = "none";
+
+                break
+
+            case "3":
+                $(".cutAv")[0].style.display = "none";
+                $(".mergeAv")[0].style.display = "none";
+                $(".videoToPng")[0].style.display = "block";
+                $(".picToVideo")[0].style.display = "none";
+                $(".picAddpic")[0].style.display = "none";
+                $(".addVideoPngLogo")[0].style.display = "none";
+                $(".addVideoGifLogo")[0].style.display = "none";
+
+                break
+
+            case "4":
+                $(".cutAv")[0].style.display = "none";
+                $(".mergeAv")[0].style.display = "none";
+                $(".videoToPng")[0].style.display = "none";
+                $(".picToVideo")[0].style.display = "block";
+                $(".picAddpic")[0].style.display = "none";
+                $(".addVideoPngLogo")[0].style.display = "none";
+                $(".addVideoGifLogo")[0].style.display = "none";
+
+                break
+            case "5":
+                $(".cutAv")[0].style.display = "none";
+                $(".mergeAv")[0].style.display = "none";
+                $(".videoToPng")[0].style.display = "none";
+                $(".picToVideo")[0].style.display = "none";
+                $(".picAddpic")[0].style.display = "none";
+                $(".addVideoPngLogo")[0].style.display = "block";
+                $(".addVideoGifLogo")[0].style.display = "none";
+                break
+            case "6":
+                $(".cutAv")[0].style.display = "none";
+                $(".mergeAv")[0].style.display = "none";
+                $(".videoToPng")[0].style.display = "none";
+                $(".picToVideo")[0].style.display = "none";
+                $(".picAddpic")[0].style.display = "none";
+                $(".addVideoPngLogo")[0].style.display = "none";
+                $(".addVideoGifLogo")[0].style.display = "block";
+                break
+            case "7":
+                $(".cutAv")[0].style.display = "none";
+                $(".mergeAv")[0].style.display = "none";
+                $(".videoToPng")[0].style.display = "none";
+                $(".picToVideo")[0].style.display = "none";
+                $(".picAddpic")[0].style.display = "block";
+                $(".addVideoPngLogo")[0].style.display = "none";
+                $(".addVideoGifLogo")[0].style.display = "none";
+                break
+            default:
+                break
+
+        }
+    }
+    function cutAv(){
+       let fields =  $("#cutAv").serializeArray();
+        var obj = {}; //声明一个对象
+        $.each(fields, function(index, field) {
+            obj[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+        })
+        $.ajax({
+            type: "post",
+            url: "http://localhost:8080/videoOperate/cutAv",
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify(obj),//将对象转为json字符串
+            success: function(obj) {
+                alert(obj);
+            }
+        });
+    }
+
+    function mergeAv(){
+        let fields =  $("#mergeAv").serializeArray();
+        var obj = {}; //声明一个对象
+        $.each(fields, function(index, field) {
+            obj[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+        })
+        $.ajax({
+            type: "post",
+            url: "http://localhost:8080/videoOperate/mergeAv",
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify(obj),//将对象转为json字符串
+            success: function(obj) {
+                alert(obj);
+            }
+        });
+    }
+
+    function videoToPng(){
+        let fields =  $("#videoToPng").serializeArray();
+        var obj = {}; //声明一个对象
+        $.each(fields, function(index, field) {
+            obj[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+        })
+        $.ajax({
+            type: "post",
+            url: "http://localhost:8080/videoOperate/videoToPng",
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify(obj),//将对象转为json字符串
+            success: function(obj) {
+                alert(obj);
+            }
+        });
+    }
+
+    function picToVideo(){
+        let fields =  $("#picToVideo").serializeArray();
+        var obj = {}; //声明一个对象
+        $.each(fields, function(index, field) {
+            obj[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+        })
+        $.ajax({
+            type: "post",
+            url: "http://localhost:8080/videoOperate/picToVideo",
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify(obj),//将对象转为json字符串
+            success: function(obj) {
+                alert(obj);
+            }
+        });
+    }
+
+    function picAddpic(){
+        let fields =  $("#picAddpic").serializeArray();
+        var obj = {}; //声明一个对象
+        $.each(fields, function(index, field) {
+            obj[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+        })
+        $.ajax({
+            type: "post",
+            url: "http://localhost:8080/videoOperate/picAddpic",
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify(obj),//将对象转为json字符串
+            success: function(obj) {
+                alert(obj);
+            }
+        });
+    }
+
+    function addVideoPngLogo(){
+        let fields =  $("#addVideoPngLogo").serializeArray();
+        var obj = {}; //声明一个对象
+        $.each(fields, function(index, field) {
+            obj[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+        })
+        $.ajax({
+            type: "post",
+            url: "http://localhost:8080/videoOperate/addVideoPngLogo",
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify(obj),//将对象转为json字符串
+            success: function(obj) {
+                alert(obj);
+            }
+        });
+    }
+
+    function addVideoGifLogo(){
+        let fields =  $("#addVideoGifLogo").serializeArray();
+        var obj = {}; //声明一个对象
+        $.each(fields, function(index, field) {
+            obj[field.name] = field.value; //通过变量，将属性值，属性一起放到对象中
+        })
+        $.ajax({
+            type: "post",
+            url: "http://localhost:8080/videoOperate/addVideoGifLogo",
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify(obj),//将对象转为json字符串
+            success: function(obj) {
+                alert(obj);
+            }
+        });
+    }
+</script>
+
+</html>
